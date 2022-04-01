@@ -38,8 +38,13 @@ class Help:
 
         # disable help button
         partner.help_button.config(state=DISABLED)
-
+        # Set sup child window (ie: help box)
         self.help_box = Toplevel()
+
+        # if users press cross at top, closes helpa nd 'releases' help button
+        self.help_box.protocol('WM_DELETE_WINDOW', partial(self.close_help,partner))
+
+
         self.help_frame = Frame(self.help_box, width=300, bg=background)
         self.help_frame.grid()
         # Help Heading Row 0
@@ -53,11 +58,12 @@ class Help:
         # Help Dismiss button row 2
         self.dismiss_btn = Button(self.help_frame, text="Dismiss",
                                   width=10, bg="orange", font="arial 10 bold",
-                                  command=self.close_help)
+                                  command=partial(self.close_help,partner))
         self.dismiss_btn.grid(row=2, pady=10)
 
     # Help close
-    def close_help(self):
+    def close_help(self,partner):
+        partner.help_button.config(state=NORMAL)
         self.help_box.destroy()
 
 
