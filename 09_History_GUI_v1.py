@@ -1,15 +1,19 @@
-"""Converter Trial3 """
-
-""" This is a copy of 05_Convertor_Trial_3_v1.py """
+""" Builds on 06_Convertor_v1
+Caleb Giddy
+"""
 
 from tkinter import *
+from functools import partial  # To prevent unwanted additional windows
+import random
 
 
 class Converter:
     def __init__(self):
-
         # Formatting variables
         background_color = "light blue"
+
+        # Initialise list to hold calculation history
+        self.all_calculations = []
 
         # Converter Frame
         self.converter_frame = Frame(bg=background_color, pady=10)
@@ -45,7 +49,7 @@ class Converter:
         self.to_c_button = Button(self.conversion_buttons_frame,
                                   text="To Centigrade", font="Arial 10 bold",
                                   command=lambda: self.temp_convert(-459),
-                                  bg="Khaki1", padx=10, pady=10, )
+                                  bg="Khaki1", padx=10, pady=10,)
         self.to_c_button.grid(row=0, column=0)
 
         self.to_f_button = Button(self.conversion_buttons_frame,
@@ -56,7 +60,7 @@ class Converter:
 
         # Answer label (row 4)
         self.converted_label = Label(self.converter_frame, font="Arial 14 bold",
-                                     fg="black", bg=background_color, pady=10,
+                                     fg="purple", bg=background_color, pady=10,
                                      text="Conversion goes here")
         self.converted_label.grid(row=4)
 
@@ -87,21 +91,22 @@ class Converter:
 
             # Check amount is valid and convert to F
             if low == -273 and to_convert >= low:
-                fahrenheit = (to_convert * 9 / 5) + 32
+                fahrenheit = (to_convert * 9/5) + 32
                 to_convert = self.round_it(to_convert)
                 fahrenheit = self.round_it(fahrenheit)
                 answer = f"{to_convert} degrees C is {fahrenheit} degrees F"
 
             # Check amount is valid and convert to C
             elif low == -459 and to_convert >= low:
-                celsius = (to_convert - 32) * 5 / 9
+                celsius = (to_convert - 32) * 5/9
                 to_convert = self.round_it(to_convert)
                 celsius = self.round_it(celsius)
                 answer = f"{to_convert} degrees F is {celsius} degrees C"
+                has_errors = "no"
 
             else:
                 # If input is invalid (e.g. too cold)
-                answer = "Too Cold"
+                answer = "Too Cold!"
                 has_errors = "yes"
 
             # Display answer
@@ -113,14 +118,16 @@ class Converter:
                 self.to_convert_entry.configure(bg=error)
 
             # Add answer to list for history
+            if answer != "Too Cold!":
+                self.all_calculations.append(answer)
+                print(self.all_calculations)
 
         except ValueError:
-            self.converted_label.configure(text="Enter a number!!", fg="red")
+            self. converted_label.configure(text="Enter a number!!", fg="red")
             self.to_convert_entry.configure(bg=error)
 
     # Rounding function
-    @staticmethod
-    def round_it(to_round):
+    def round_it(self, to_round):
         if to_round % 1 == 0:
             rounded = int(to_round)
         else:
